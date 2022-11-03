@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,8 +75,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  uint8_t receivedData[100];
-  char dataMode[20], longitude[1], latitude[1];
+  uint8_t receivedData[14] = {0};
+  char dataMode[20], longitude, latitude;
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -90,6 +91,16 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  struct {
+	  char dataMode[10];
+	  int latitude, longitude;
+  } DummySensor;
+
+  char *token;
+  const char separator[2] = ",";
+
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, 1);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, 1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -98,14 +109,18 @@ int main(void)
   {
 	  HAL_UART_Receive(&huart2, receivedData, sizeof(receivedData), HAL_MAX_DELAY);
 
-	  strcpy(dataMode, strtok(receivedData, ','));
-	  strcpy(latitude, strtok(NULL, ','));
-	  strcpy(longitude, strtok(NULL, ','));
+	  token = strtok(receivedData, separator);
 
-	  CDC_Transmit_FS((uint8_t *)receivedData, strlen(receivedData));
-	  CDC_Transmit_FS((uint8_t *)dataMode, strlen(dataMode));
-	  CDC_Transmit_FS((uint8_t *)latitude, strlen(latitude));
-	  CDC_Transmit_FS((uint8_t *)longitude, strlen(longitude));
+	  if( token != NULL ) {
+		  strcpy(DummySensor.dataMode, token);
+	      DummySensor.latitude = atoi(strtok(NULL, separator));
+	      DummySensor.longitude = atoi(strtok(NULL, separator));
+	  }
+
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, DummySensor.latitude);
+	  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, DummySensor.longitude);
+
+	  while(CDC_Transmit_FS((uint8_t *)receivedData, strlen(receivedData))== USBD_BUSY);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -38,37 +38,37 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := DHTTest
+BUILD_ARTIFACT_NAME := UARTTest
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-DHTTest.elf \
+UARTTest.elf \
 
 MAP_FILES += \
-DHTTest.map \
+UARTTest.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-DHTTest.list \
+UARTTest.list \
 
 OBJCOPY_BIN += \
-DHTTest.bin \
+UARTTest.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: DHTTest.elf secondary-outputs
+main-build: UARTTest.elf secondary-outputs
 
 # Tool invocations
-DHTTest.elf DHTTest.map: $(OBJS) $(USER_OBJS) /Users/airlanggafidiyanto/Documents/Kuliah/Skripsi/LearnSTM32F103x/DHTTest/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "DHTTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/Users/airlanggafidiyanto/Documents/Kuliah/Skripsi/LearnSTM32F103x/DHTTest/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DHTTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+UARTTest.elf UARTTest.map: $(OBJS) $(USER_OBJS) /Users/airlanggafidiyanto/Documents/Kuliah/Skripsi/LearnSTM32/UARTTest/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "UARTTest.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/Users/airlanggafidiyanto/Documents/Kuliah/Skripsi/LearnSTM32/UARTTest/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="UARTTest.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -77,19 +77,19 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-DHTTest.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "DHTTest.list"
+UARTTest.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "UARTTest.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-DHTTest.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "DHTTest.bin"
+UARTTest.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "UARTTest.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) DHTTest.bin DHTTest.elf DHTTest.list DHTTest.map default.size.stdout
+	-$(RM) UARTTest.bin UARTTest.elf UARTTest.list UARTTest.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
